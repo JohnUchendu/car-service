@@ -96,7 +96,7 @@ const Footer = () => {
             <h4 className="font-display text-xl mb-6">SERVICES</h4>
             <ul className="space-y-3">
               {[
-                "Oven-Baked Painting",
+                "Car Painting",
                 "Chrome Delete",
                 "Deep Cleaning",
                 "Detailing",
