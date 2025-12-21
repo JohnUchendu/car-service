@@ -8,9 +8,9 @@ import { useEffect, useRef, useState } from "react";
 const services = [
   {
     icon: Paintbrush,
-    title: "Oven-Baked Painting",
+    title: "Car Painting",
     headline: "Get That Brand New Look Without Traces of Old Paint",
-    description: "Our oven-baked painting erases fades and scratches completely. Your car comes out looking like it just rolled off the lot—no traces left behind.",
+    description: "Our satisfactory painting erases fades and scratches completely. Your car comes out looking like it just rolled off the lot—no traces left behind.",
     image: "/service-painting.jpg",
     features: ["Factory Finish", "No Traces", "Color Matching"],
   },
