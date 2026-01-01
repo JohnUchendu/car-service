@@ -57,7 +57,7 @@ import "dotenv/config";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 // import { PrismaClient } from ".prisma/client";
-import { PrismaClient } from ".prisma/client/default";
+const { PrismaClient } = require(".prisma/client");
 
 const connectionString = process.env.DATABASE_URL;
 
@@ -78,7 +78,7 @@ const adapter = new PrismaPg(pool);
 
 // Type-safe global variable for Prisma
 const globalForPrisma = global as unknown as {
-  prisma: PrismaClient | undefined;
+  prisma: typeof PrismaClient | undefined;
 };
 
 // Initialize Prisma Client with the adapter
