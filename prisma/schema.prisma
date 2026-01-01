@@ -1,0 +1,113 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+model Service {
+  id          Int       @id @default(autoincrement())
+  name        String
+  description String?
+  price       Decimal   @db.Decimal(10, 2)
+  duration    Int       // in minutes
+  active      Boolean   @default(true)
+  bookings    Booking[]
+  createdAt   DateTime  @default(now())
+
+  @@index([active])
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  phone     String
+  vehicles  Vehicle[]
+  bookings  Booking[]
+  createdAt DateTime  @default(now())
+
+  @@index([email])
+}
+
+model Vehicle {
+  id         Int       @id @default(autoincrement())
+  customerId Int
+  make       String
+  model      String
+  year       Int
+  plate      String    @unique
+  color      String?
+  customer   Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  bookings   Booking[]
+  createdAt  DateTime  @default(now())
+
+  @@index([customerId])
+  @@index([plate])
+}
+
+model Booking {
+  id             Int           @id @default(autoincrement())
+  customerId     Int
+  vehicleId      Int
+  serviceId      Int
+  date           DateTime
+  timeSlot       String        // e.g. "10:00-12:00"
+  pickupDropoff  Boolean       @default(false)
+  depositPaid    Boolean       @default(false)
+  status         BookingStatus @default(PENDING)
+  notes          String?
+
+  // Relationships
+  customer       Customer      @relation(fields: [customerId], references: [id])
+  vehicle        Vehicle       @relation(fields: [vehicleId], references: [id])
+  service        Service       @relation(fields: [serviceId], references: [id])
+  payment        Payment?
+
+  // Timestamps
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Indexes for common queries (admin dashboard, availability checks, etc.)
+  @@index([date])
+  @@index([status])
+  @@index([customerId])
+  @@index([vehicleId])
+  @@index([serviceId])
+  @@index([date, timeSlot]) // Composite index for checking availability on a specific day
+}
+
+model Payment {
+  id        Int           @id @default(autoincrement())
+  bookingId Int           @unique
+  amount    Decimal       @db.Decimal(10, 2)
+  reference String        @unique
+  status    PaymentStatus
+  method    String        @default("paystack")
+  metadata  Json?
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+
+  @@index([bookingId])
+  @@index([status])
+  @@index([reference])
+}

@@ -110,7 +110,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Phone, ChevronDown, User, LogIn, Mail } from "lucide-react";
+import { Menu, X, Calendar, Phone, ChevronDown, User, LogIn, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -262,10 +262,12 @@ const Navbar = () => {
             )}
           </div>
           
+          <Link href="/booking">
           <Button variant="hero" size="lg">
-            <Phone className="w-4 h-4" />
+            <Calendar className="w-4 h-4" />
             Book Now
           </Button>
+          </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -320,10 +322,12 @@ const Navbar = () => {
               </div>
             </div>
             
+            <Link href="/booking">
             <Button variant="hero" size="lg" className="mt-4">
-              <Phone className="w-4 h-4" />
+              <Calendar className="w-4 h-4" />
               Book Now
             </Button>
+            </Link>
           </div>
         </div>
       )}
