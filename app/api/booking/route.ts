@@ -113,7 +113,7 @@ export async function POST(req: NextRequest) {
         email: customer.email,
         amount: Math.round(depositAmount * 100), // Convert to kobo
         reference: `booking_${booking.id}_${Date.now()}`,
-        callback_url: `${process.env.NEXT_PUBLIC_URL || 'http://localhost:3000'}/booking/success`,
+        callback_url: `${process.env.NEXT_PUBLIC_URL || 'http://refinishphc.com'}/booking/success`,
         metadata: {
           booking_id: booking.id,
           customer_id: dbCustomer.id,
@@ -217,7 +217,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({
       date,
       availableSlots,
-      bookedSlots: bookings.map(b => b.timeSlot)
+      bookedSlots: bookings.map((b: any) => b.timeSlot)
     })
 
   } catch (error) {
