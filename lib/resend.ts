@@ -7,7 +7,7 @@ export const resend = new Resend(process.env.RESEND_API_KEY)
 export async function testEmail() {
   try {
     const data = await resend.emails.send({
-      from: 'Auto Detailing <onboarding@resend.dev>',
+      from: 'Auto Detailing <refinish@notifications.refinishphc.com>',
       to: ['delivered@resend.dev'],
       subject: 'Test Email',
       html: '<strong>It works!</strong>',

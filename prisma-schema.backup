@@ -1,4 +1,5 @@
 // prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -12,6 +13,12 @@ enum BookingStatus {
   CONFIRMED
   COMPLETED
   CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
 }
 
 model Service {
@@ -63,19 +70,15 @@ model Booking {
   date           DateTime
   timeSlot       String        // e.g. "10:00-12:00"
   pickupDropoff  Boolean       @default(false)
+  depositPaid    Boolean       @default(false)
   status         BookingStatus @default(PENDING)
   notes          String?
-  
-  // New fields for payment tracking when customer arrives
-  amountPaid     Decimal?      @db.Decimal(10, 2)  // Amount actually paid
-  paymentDate    DateTime?     // When payment was made
-  paymentMethod  String?       // e.g., "Cash", "Card", "Transfer"
-  paymentNotes   String?
 
   // Relationships
   customer       Customer      @relation(fields: [customerId], references: [id])
   vehicle        Vehicle       @relation(fields: [vehicleId], references: [id])
   service        Service       @relation(fields: [serviceId], references: [id])
+  payment        Payment?
 
   // Timestamps
   createdAt      DateTime      @default(now())
@@ -88,5 +91,23 @@ model Booking {
   @@index([vehicleId])
   @@index([serviceId])
   @@index([date, timeSlot]) // Composite index for checking availability on a specific day
-  @@index([paymentDate])    // For payment tracking
+}
+
+model Payment {
+  id        Int           @id @default(autoincrement())
+  bookingId Int           @unique
+  amount    Decimal       @db.Decimal(10, 2)
+  reference String        @unique
+  status    PaymentStatus
+  method    String        @default("paystack")
+  metadata  Json?
+
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+
+  @@index([bookingId])
+  @@index([status])
+  @@index([reference])
 }

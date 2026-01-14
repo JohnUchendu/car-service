@@ -1,3 +1,5 @@
+// app/(public)/page.tsx
+
 import type { Metadata } from "next";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";

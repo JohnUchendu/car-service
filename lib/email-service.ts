@@ -16,11 +16,11 @@ export async function sendBookingConfirmation(booking: any) {
     )
 
     const data = await resend.emails.send({
-      from: 'Auto Detailing <bookings@resend.dev>', // Change to your domain after setup
+      from: 'Auto Detailing <bookings@notifications.refinishphc.com>', // Change to your domain after setup
       to: [booking.customer.email],
       subject,
       html,
-      replyTo: 'support@cardetailing.com'
+      replyTo: 'info@refinishphc.com'
     })
 
     console.log(`✅ Confirmation email sent to ${booking.customer.email}`)
@@ -56,10 +56,10 @@ export async function sendAdminNotification(booking: any) {
 }
 
 // For testing
-export async function sendTestEmail(to: string = 'delivered@resend.dev') {
+export async function sendTestEmail(to: string = 'refinish@notifications.refinishphc.com') {
   try {
     const data = await resend.emails.send({
-      from: 'Auto Detailing <onboarding@resend.dev>',
+      from: 'Auto Detailing <refinish@notifications.refinishphc.com>',
       to: [to],
       subject: 'Test Email from Auto Detailing',
       html: '<h1>Email is working! 🎉</h1><p>Your booking system emails are properly configured.</p>'

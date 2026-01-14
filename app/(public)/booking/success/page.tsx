@@ -1,11 +1,15 @@
+
+
+
 // // app/(public)/booking/success/page.tsx
 // "use client"
 
-// import { useEffect, useState } from 'react'
+// import { useEffect, useState, Suspense } from 'react'
 // import { useSearchParams, useRouter } from 'next/navigation'
 // import { CheckCircle, Calendar, Car, Mail, Phone, Loader2, AlertCircle } from "lucide-react"
 // import { Button } from "@/components/ui/button"
 // import Link from "next/link"
+// import Image from 'next/image'
 
 // type BookingDetails = {
 //   id: number
@@ -32,7 +36,7 @@
 //   }
 // }
 
-// export default function BookingSuccessPage() {
+// function BookingSuccessContent() {
 //   const searchParams = useSearchParams()
 //   const router = useRouter()
 //   const reference = searchParams.get('reference')
@@ -43,62 +47,7 @@
 //   const [booking, setBooking] = useState<BookingDetails | null>(null)
 //   const [error, setError] = useState<string | null>(null)
 
-// // In your success page useEffect, add logging:
-// useEffect(() => {
-//   const verifyAndFetch = async () => {
-//     if (!reference) {
-//       setError("No payment reference found")
-//       setLoading(false)
-//       setVerifying(false)
-//       return
-//     }
-
-//     console.log("🔍 Starting verification for reference:", reference)
-
-//     try {
-//       // Step 1: Verify payment with Paystack
-//       const verifyRes = await fetch(`/api/paystack/verify?reference=${reference}`)
-//       const verifyData = await verifyRes.json()
-      
-//       console.log("🔍 Verify API response:", verifyData)
-      
-//       if (!verifyData.success) {
-//         console.log("❌ Verification failed:", verifyData.message)
-//         setError(`Payment verification failed: ${verifyData.message}`)
-//         setVerifying(false)
-//         setLoading(false)
-//         return
-//       }
-
-//       console.log("✅ Verification successful, bookingId:", verifyData.bookingId)
-//       setVerifying(false)
-      
-//       // Step 2: Fetch booking details
-//       const bookingRes = await fetch(`/api/booking/${verifyData.bookingId}`)
-//       console.log("🔍 Booking fetch response status:", bookingRes.status)
-      
-//       if (bookingRes.ok) {
-//         const bookingData = await bookingRes.json()
-//         console.log("✅ Booking data loaded:", bookingData)
-//         setBooking(bookingData)
-//       } else {
-//         const errorText = await bookingRes.text()
-//         console.log("❌ Booking fetch failed:", errorText)
-//         setError("Failed to load booking details")
-//       }
-      
-//     } catch (err: any) {
-//       console.error("❌ Error in verifyAndFetch:", err)
-//       setError(err.message || "An error occurred")
-//     } finally {
-//       setLoading(false)
-//     }
-//   }
-
-//   verifyAndFetch()
-// }, [reference])
-
-
+//   // Combined useEffect for verification
 //   useEffect(() => {
 //     const verifyAndFetch = async () => {
 //       if (!reference) {
@@ -108,30 +57,42 @@
 //         return
 //       }
 
+//       console.log("🔍 Starting verification for reference:", reference)
+
 //       try {
 //         // Step 1: Verify payment with Paystack
 //         const verifyRes = await fetch(`/api/paystack/verify?reference=${reference}`)
 //         const verifyData = await verifyRes.json()
         
+//         console.log("🔍 Verify API response:", verifyData)
+        
 //         if (!verifyData.success) {
+//           console.log("❌ Verification failed:", verifyData.message)
 //           setError(`Payment verification failed: ${verifyData.message}`)
 //           setVerifying(false)
 //           setLoading(false)
 //           return
 //         }
 
+//         console.log("✅ Verification successful, bookingId:", verifyData.bookingId)
 //         setVerifying(false)
         
 //         // Step 2: Fetch booking details
 //         const bookingRes = await fetch(`/api/booking/${verifyData.bookingId}`)
+//         console.log("🔍 Booking fetch response status:", bookingRes.status)
+        
 //         if (bookingRes.ok) {
 //           const bookingData = await bookingRes.json()
+//           console.log("✅ Booking data loaded:", bookingData)
 //           setBooking(bookingData)
 //         } else {
+//           const errorText = await bookingRes.text()
+//           console.log("❌ Booking fetch failed:", errorText)
 //           setError("Failed to load booking details")
 //         }
         
 //       } catch (err: any) {
+//         console.error("❌ Error in verifyAndFetch:", err)
 //         setError(err.message || "An error occurred")
 //       } finally {
 //         setLoading(false)
@@ -238,7 +199,8 @@
 //               <CheckCircle className="h-16 w-16 text-green-600" />
 //             </div>
 //           </div>
-//           <h1 className="text-4xl font-bold text-gray-900 mb-4">
+//           <Image src="/logo.png" alt='logo' width={100} height={100} />
+//                     <h1 className="text-4xl font-bold text-gray-900 mb-4">
 //             Booking Confirmed! 🎉
 //           </h1>
 //           <p className="text-lg text-gray-600">
@@ -354,7 +316,7 @@
 //           </Button>
           
 //           <Button asChild variant="outline" className="w-full h-14 text-lg">
-//             <Link href="/book">
+//             <Link href="/booking">
 //               Book Another Service
 //             </Link>
 //           </Button>
@@ -382,13 +344,35 @@
 //   )
 // }
 
+// // Main component with Suspense boundary
+// export default function BookingSuccessPage() {
+//   return (
+//     <Suspense fallback={
+//       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+//         <div className="max-w-md w-full bg-white rounded-xl shadow-2xl p-8 text-center">
+//           <Loader2 className="h-16 w-16 animate-spin text-blue-600 mx-auto mb-6" />
+//           <h2 className="text-2xl font-bold text-gray-900 mb-4">
+//             Loading...
+//           </h2>
+//           <p className="text-gray-600">
+//             Please wait while we load your booking information.
+//           </p>
+//         </div>
+//       </div>
+//     }>
+//       <BookingSuccessContent />
+//     </Suspense>
+//   )
+// }
+
+
 
 // app/(public)/booking/success/page.tsx
 "use client"
 
 import { useEffect, useState, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { CheckCircle, Calendar, Car, Mail, Phone, Loader2, AlertCircle } from "lucide-react"
+import { CheckCircle, Calendar, Car, Mail, Phone, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import Image from 'next/image'
@@ -399,7 +383,7 @@ type BookingDetails = {
   timeSlot: string
   pickupDropoff: boolean
   status: string
-  depositPaid: boolean
+  notes?: string
   service: {
     name: string
     price: number
@@ -421,117 +405,57 @@ type BookingDetails = {
 function BookingSuccessContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const reference = searchParams.get('reference')
-  const status = searchParams.get('status')
+  const bookingId = searchParams.get('booking_id')
   
   const [loading, setLoading] = useState(true)
-  const [verifying, setVerifying] = useState(true)
   const [booking, setBooking] = useState<BookingDetails | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  // Combined useEffect for verification
   useEffect(() => {
-    const verifyAndFetch = async () => {
-      if (!reference) {
-        setError("No payment reference found")
+    const fetchBooking = async () => {
+      if (!bookingId) {
+        setError("No booking ID found")
         setLoading(false)
-        setVerifying(false)
         return
       }
 
-      console.log("🔍 Starting verification for reference:", reference)
-
       try {
-        // Step 1: Verify payment with Paystack
-        const verifyRes = await fetch(`/api/paystack/verify?reference=${reference}`)
-        const verifyData = await verifyRes.json()
-        
-        console.log("🔍 Verify API response:", verifyData)
-        
-        if (!verifyData.success) {
-          console.log("❌ Verification failed:", verifyData.message)
-          setError(`Payment verification failed: ${verifyData.message}`)
-          setVerifying(false)
-          setLoading(false)
-          return
-        }
-
-        console.log("✅ Verification successful, bookingId:", verifyData.bookingId)
-        setVerifying(false)
-        
-        // Step 2: Fetch booking details
-        const bookingRes = await fetch(`/api/booking/${verifyData.bookingId}`)
-        console.log("🔍 Booking fetch response status:", bookingRes.status)
+        const bookingRes = await fetch(`/api/booking/${bookingId}`)
         
         if (bookingRes.ok) {
           const bookingData = await bookingRes.json()
-          console.log("✅ Booking data loaded:", bookingData)
           setBooking(bookingData)
         } else {
-          const errorText = await bookingRes.text()
-          console.log("❌ Booking fetch failed:", errorText)
-          setError("Failed to load booking details")
+          const errorData = await bookingRes.json()
+          setError(errorData.error || "Failed to load booking details")
         }
         
       } catch (err: any) {
-        console.error("❌ Error in verifyAndFetch:", err)
+        console.error("❌ Error fetching booking:", err)
         setError(err.message || "An error occurred")
       } finally {
         setLoading(false)
       }
     }
 
-    verifyAndFetch()
-  }, [reference])
+    fetchBooking()
+  }, [bookingId])
 
-  // Handle payment failure
-  if (status === "failed") {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
-          <div className="flex justify-center mb-6">
-            <div className="bg-red-100 p-3 rounded-full">
-              <AlertCircle className="h-12 w-12 text-red-600" />
-            </div>
-          </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Payment Failed ❌
-          </h1>
-          <p className="text-gray-600 mb-6">
-            Your payment was not successful. Please try again or contact support.
-          </p>
-          <div className="space-y-4">
-            <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-              <Link href="/booking">
-                Try Again
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full">
-              <Link href="/">
-                Return to Home
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  // Show loading/verifying state
-  if (loading || verifying) {
+  // Show loading state
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-xl shadow-2xl p-8 text-center">
           <Loader2 className="h-16 w-16 animate-spin text-blue-600 mx-auto mb-6" />
           <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            {verifying ? "Verifying Payment..." : "Loading Booking Details..."}
+            Loading Booking Details...
           </h2>
           <p className="text-gray-600">
-            Please wait while we process your payment and booking information.
+            Please wait while we load your booking information.
           </p>
-          {reference && (
+          {bookingId && (
             <p className="text-sm text-gray-500 mt-4">
-              Reference: <code className="bg-gray-100 px-2 py-1 rounded">{reference}</code>
+              Booking ID: <code className="bg-gray-100 px-2 py-1 rounded">#{bookingId}</code>
             </p>
           )}
         </div>
@@ -546,24 +470,25 @@ function BookingSuccessContent() {
         <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
           <div className="flex justify-center mb-6">
             <div className="bg-red-100 p-3 rounded-full">
-              <AlertCircle className="h-12 w-12 text-red-600" />
+              <CheckCircle className="h-12 w-12 text-red-600" />
             </div>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-4">
-            Something Went Wrong
+            Booking Created!
           </h1>
-          <p className="text-gray-600 mb-6">{error}</p>
+          <p className="text-gray-600 mb-4">
+            Your booking has been created, but we couldn't load the details.
+          </p>
+          <p className="text-sm text-gray-500 mb-6">Error: {error}</p>
           <div className="space-y-4">
             <Button asChild className="w-full bg-blue-600 hover:bg-blue-700">
-              <Link href="/book">
-                Try Booking Again
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full">
               <Link href="/">
                 Return to Home
               </Link>
             </Button>
+            <p className="text-sm text-gray-500">
+              Your booking ID is: <strong>#{bookingId}</strong>
+            </p>
           </div>
         </div>
       </div>
@@ -582,11 +507,11 @@ function BookingSuccessContent() {
             </div>
           </div>
           <Image src="/logo.png" alt='logo' width={100} height={100} />
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             Booking Confirmed! 🎉
           </h1>
           <p className="text-lg text-gray-600">
-            Thank you for your booking! Your deposit payment was successful.
+            Your booking has been successfully created. No payment required upfront.
           </p>
           {booking && (
             <p className="text-sm text-gray-500 mt-2">
@@ -617,6 +542,9 @@ function BookingSuccessContent() {
                       })}
                     </p>
                     <p className="text-sm text-gray-600">Time: {booking.timeSlot}</p>
+                    <p className="text-sm text-gray-600">
+                      Service Price: ₦{Number(booking.service.price).toLocaleString()}
+                    </p>
                   </div>
                 </div>
 
@@ -649,26 +577,33 @@ function BookingSuccessContent() {
 
                 {/* Payment Info */}
                 <div className="flex items-start space-x-3">
-                  <CheckCircle className="h-5 w-5 text-green-600 mt-0.5" />
+                  <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5" />
                   <div>
-                    <h3 className="font-semibold">Payment Status</h3>
-                    <p className="text-green-700 font-medium">Deposit Paid ✓</p>
-                    <p className="text-sm text-gray-600">
-                      Amount: ₦{booking.service.price.toLocaleString()}
+                    <h3 className="font-semibold">Booking Status</h3>
+                    <p className="text-blue-700 font-medium">
+                      {booking.status === "CONFIRMED" ? "Confirmed ✓" : "Pending Review"}
                     </p>
-                    <p className="text-xs text-gray-500">
-                      Reference: {reference}
+                    <p className="text-sm text-gray-600">
+                      Pay when you arrive at the shop
                     </p>
                   </div>
                 </div>
               </div>
             </div>
 
+            {/* Notes */}
+            {booking.notes && (
+              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="font-semibold text-blue-800 mb-2">📝 Your Notes</h3>
+                <p className="text-sm text-blue-700">{booking.notes}</p>
+              </div>
+            )}
+
             {/* Pickup Info */}
             {booking.pickupDropoff && (
-              <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-                <h3 className="font-semibold text-blue-800 mb-2">🚗 Pickup & Drop-off Service</h3>
-                <p className="text-sm text-blue-700">
+              <div className="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+                <h3 className="font-semibold text-green-800 mb-2">🚗 Pickup & Drop-off Service</h3>
+                <p className="text-sm text-green-700">
                   Our driver will contact you 30 minutes before the scheduled time to arrange pickup.
                   Please ensure your vehicle is accessible at the provided location.
                 </p>
@@ -677,8 +612,9 @@ function BookingSuccessContent() {
 
             {/* Important Notes */}
             <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-              <h3 className="font-semibold text-yellow-800 mb-2">📋 Important Notes</h3>
+              <h3 className="font-semibold text-yellow-800 mb-2">📋 Important Information</h3>
               <ul className="text-sm text-yellow-700 space-y-1">
+                <li>• <strong>No payment required now</strong> - Pay when you arrive</li>
                 <li>• Please arrive 10 minutes before your scheduled time</li>
                 <li>• Bring a valid ID for verification</li>
                 <li>• Remove all personal belongings from your vehicle</li>
