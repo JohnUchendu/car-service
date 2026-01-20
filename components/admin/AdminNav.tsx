@@ -68,6 +68,7 @@ export default function AdminNav({ user }: AdminNavProps) {
               </div>
             </div>
 
+
             {/* Right side */}
             <div className="flex items-center space-x-4">
               <div className="text-sm text-gray-700 hidden md:block">
