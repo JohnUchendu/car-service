@@ -56,6 +56,7 @@ export default function AdminLoginPage() {
             Sign in to manage bookings
           </CardDescription>
         </CardHeader>
+        
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
