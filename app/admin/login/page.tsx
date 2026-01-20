@@ -1,5 +1,4 @@
-// app/(portal)/login
-
+// app/(admin)/login/page.tsx
 "use client"
 
 import { useState } from "react"
@@ -12,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Car, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 
-export default function LoginPage() {
+export default function AdminLoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -30,37 +29,31 @@ export default function LoginPage() {
       })
 
       if (result?.error) {
-        toast("Login Failed", {
-          description: "Invalid email or password",
-        })
+        toast.error("Invalid email or password")
       } else {
-        toast("Success", {
-          description: "Logged in successfully",
-        })
-        router.push("/portal/dashboard")
+        toast.success("Login successful")
+        router.push("/admin/dashboard")
         router.refresh()
       }
     } catch {
-      toast("Error", {
-        description: "Something went wrong",
-      })
+      toast.error("Something went wrong")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-gray-100 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1">
-          <div className="flex items-center justify-center mb-4">
+          <div className="flex justify-center mb-4">
             <Car className="h-12 w-12 text-blue-600" />
           </div>
           <CardTitle className="text-2xl text-center">
-            Admin Portal
+            Admin Login
           </CardTitle>
           <CardDescription className="text-center">
-            Sign in to manage your auto detailing business
+            Sign in to manage bookings
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -70,7 +63,7 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@example.com"
+                placeholder="admin@refinish.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -81,7 +74,6 @@ export default function LoginPage() {
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -101,18 +93,10 @@ export default function LoginPage() {
                 "Sign In"
               )}
             </Button>
-
-            {/* Demo credentials */}
-            <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-              <p className="text-sm font-semibold text-gray-700 mb-2">
-                Demo Credentials:
-              </p>
-              <p className="text-sm text-gray-600">
-                Email: admin@example.com
-              </p>
-              <p className="text-sm text-gray-600">
-                Password: password123
-              </p>
+            <div className="text-center text-sm text-gray-500 mt-4">
+              <p>Demo credentials:</p>
+              <p>Email: admin@refinish.com</p>
+              <p>Password: admin123</p>
             </div>
           </form>
         </CardContent>
